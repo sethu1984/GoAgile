@@ -1,0 +1,450 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="GoAgileModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="GoAgileModelStoreContainer">
+          <EntitySet Name="ProductBackLog" EntityType="GoAgileModel.Store.ProductBackLog" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Project" EntityType="GoAgileModel.Store.Project" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ProjectRelease" EntityType="GoAgileModel.Store.ProjectRelease" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Sprint" EntityType="GoAgileModel.Store.Sprint" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="SprintBackLog" EntityType="GoAgileModel.Store.SprintBackLog" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="UserAuthentication" EntityType="GoAgileModel.Store.UserAuthentication" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Project_PrjRelease" Association="GoAgileModel.Store.FK_Project_PrjRelease">
+            <End Role="Project" EntitySet="Project" />
+            <End Role="ProjectRelease" EntitySet="ProjectRelease" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Project_PrkBackLog" Association="GoAgileModel.Store.FK_Project_PrkBackLog">
+            <End Role="Project" EntitySet="Project" />
+            <End Role="ProductBackLog" EntitySet="ProductBackLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Release_Sprint" Association="GoAgileModel.Store.FK_Release_Sprint">
+            <End Role="ProjectRelease" EntitySet="ProjectRelease" />
+            <End Role="Sprint" EntitySet="Sprint" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintBackLog_Project" Association="GoAgileModel.Store.FK_SprintBackLog_Project">
+            <End Role="Project" EntitySet="Project" />
+            <End Role="SprintBackLog" EntitySet="SprintBackLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProfile_Project" Association="GoAgileModel.Store.FK_UserProfile_Project">
+            <End Role="UserAuthentication" EntitySet="UserAuthentication" />
+            <End Role="Project" EntitySet="Project" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ProductBackLog">
+          <Key>
+            <PropertyRef Name="ProductBackLogId" />
+          </Key>
+          <Property Name="ProductBackLogId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectId" Type="int" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
+          <Property Name="Description" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="Project">
+          <Key>
+            <PropertyRef Name="ProjectID" />
+          </Key>
+          <Property Name="ProjectID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="500" />
+          <Property Name="Description" Type="varchar" Nullable="false" MaxLength="500" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="Status" Type="bit" />
+        </EntityType>
+        <EntityType Name="ProjectRelease">
+          <Key>
+            <PropertyRef Name="ProjectReleaseID" />
+          </Key>
+          <Property Name="ProjectReleaseID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="250" />
+          <Property Name="Description" Type="varchar" MaxLength="500" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Sprint">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="varchar" MaxLength="250" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="ReleaseId" Type="int" />
+        </EntityType>
+        <EntityType Name="SprintBackLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="varchar" MaxLength="25" />
+          <Property Name="Description" Type="varchar" MaxLength="100" />
+          <Property Name="ProjectId" Type="int" />
+        </EntityType>
+        <EntityType Name="UserAuthentication">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="Password" Type="varchar" Nullable="false" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_Project_PrjRelease">
+          <End Role="Project" Type="GoAgileModel.Store.Project" Multiplicity="1" />
+          <End Role="ProjectRelease" Type="GoAgileModel.Store.ProjectRelease" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="ProjectID" />
+            </Principal>
+            <Dependent Role="ProjectRelease">
+              <PropertyRef Name="ProjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Project_PrkBackLog">
+          <End Role="Project" Type="GoAgileModel.Store.Project" Multiplicity="0..1" />
+          <End Role="ProductBackLog" Type="GoAgileModel.Store.ProductBackLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="ProjectID" />
+            </Principal>
+            <Dependent Role="ProductBackLog">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Release_Sprint">
+          <End Role="ProjectRelease" Type="GoAgileModel.Store.ProjectRelease" Multiplicity="0..1" />
+          <End Role="Sprint" Type="GoAgileModel.Store.Sprint" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectRelease">
+              <PropertyRef Name="ProjectReleaseID" />
+            </Principal>
+            <Dependent Role="Sprint">
+              <PropertyRef Name="ReleaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintBackLog_Project">
+          <End Role="Project" Type="GoAgileModel.Store.Project" Multiplicity="0..1" />
+          <End Role="SprintBackLog" Type="GoAgileModel.Store.SprintBackLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="ProjectID" />
+            </Principal>
+            <Dependent Role="SprintBackLog">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserProfile_Project">
+          <End Role="UserAuthentication" Type="GoAgileModel.Store.UserAuthentication" Multiplicity="0..1" />
+          <End Role="Project" Type="GoAgileModel.Store.Project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserAuthentication">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Project">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+      warning 6013: The table/view 'GoAgile.dbo.UserProfile' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+      
+      <EntityType Name="UserProfile">
+        <Property Name="Id" Type="int" />
+        <Property Name="FirstName" Type="varchar" MaxLength="25" />
+        <Property Name="LastName" Type="varchar" MaxLength="25" />
+        <Property Name="Email" Type="varchar" MaxLength="50" />
+        <Property Name="MobileNo" Type="numeric" Precision="12" />
+      </EntityType>-->
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GoAgileModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="GoAgileContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ProductBackLogs" EntityType="GoAgileModel.ProductBackLog" />
+          <EntitySet Name="Projects" EntityType="GoAgileModel.Project" />
+          <EntitySet Name="ProjectReleases" EntityType="GoAgileModel.ProjectRelease" />
+          <EntitySet Name="Sprints" EntityType="GoAgileModel.Sprint" />
+          <EntitySet Name="SprintBackLogs" EntityType="GoAgileModel.SprintBackLog" />
+          <EntitySet Name="UserAuthentications" EntityType="GoAgileModel.UserAuthentication" />
+          <AssociationSet Name="FK_Project_PrkBackLog" Association="GoAgileModel.FK_Project_PrkBackLog">
+            <End Role="Project" EntitySet="Projects" />
+            <End Role="ProductBackLog" EntitySet="ProductBackLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Project_PrjRelease" Association="GoAgileModel.FK_Project_PrjRelease">
+            <End Role="Project" EntitySet="Projects" />
+            <End Role="ProjectRelease" EntitySet="ProjectReleases" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SprintBackLog_Project" Association="GoAgileModel.FK_SprintBackLog_Project">
+            <End Role="Project" EntitySet="Projects" />
+            <End Role="SprintBackLog" EntitySet="SprintBackLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProfile_Project" Association="GoAgileModel.FK_UserProfile_Project">
+            <End Role="UserAuthentication" EntitySet="UserAuthentications" />
+            <End Role="Project" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Release_Sprint" Association="GoAgileModel.FK_Release_Sprint">
+            <End Role="ProjectRelease" EntitySet="ProjectReleases" />
+            <End Role="Sprint" EntitySet="Sprints" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ProductBackLog">
+          <Key>
+            <PropertyRef Name="ProductBackLogId" />
+          </Key>
+          <Property Name="ProductBackLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectId" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="Project" Relationship="GoAgileModel.FK_Project_PrkBackLog" FromRole="ProductBackLog" ToRole="Project" />
+        </EntityType>
+        <EntityType Name="Project">
+          <Key>
+            <PropertyRef Name="ProjectID" />
+          </Key>
+          <Property Name="ProjectID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="ProductBackLogs" Relationship="GoAgileModel.FK_Project_PrkBackLog" FromRole="Project" ToRole="ProductBackLog" />
+          <NavigationProperty Name="ProjectReleases" Relationship="GoAgileModel.FK_Project_PrjRelease" FromRole="Project" ToRole="ProjectRelease" />
+          <NavigationProperty Name="SprintBackLogs" Relationship="GoAgileModel.FK_SprintBackLog_Project" FromRole="Project" ToRole="SprintBackLog" />
+          <NavigationProperty Name="UserAuthentication" Relationship="GoAgileModel.FK_UserProfile_Project" FromRole="Project" ToRole="UserAuthentication" />
+        </EntityType>
+        <EntityType Name="ProjectRelease">
+          <Key>
+            <PropertyRef Name="ProjectReleaseID" />
+          </Key>
+          <Property Name="ProjectReleaseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="250" Unicode="false" FixedLength="false" />
+          <Property Name="Description" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="Project" Relationship="GoAgileModel.FK_Project_PrjRelease" FromRole="ProjectRelease" ToRole="Project" />
+          <NavigationProperty Name="Sprints" Relationship="GoAgileModel.FK_Release_Sprint" FromRole="ProjectRelease" ToRole="Sprint" />
+        </EntityType>
+        <EntityType Name="Sprint">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="250" Unicode="false" FixedLength="false" />
+          <Property Name="StartDate" Type="DateTime" />
+          <Property Name="EndDate" Type="DateTime" />
+          <Property Name="ReleaseId" Type="Int32" />
+          <NavigationProperty Name="ProjectRelease" Relationship="GoAgileModel.FK_Release_Sprint" FromRole="Sprint" ToRole="ProjectRelease" />
+        </EntityType>
+        <EntityType Name="SprintBackLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="25" Unicode="false" FixedLength="false" />
+          <Property Name="Description" Type="String" MaxLength="100" Unicode="false" FixedLength="false" />
+          <Property Name="ProjectId" Type="Int32" />
+          <NavigationProperty Name="Project" Relationship="GoAgileModel.FK_SprintBackLog_Project" FromRole="SprintBackLog" ToRole="Project" />
+        </EntityType>
+        <EntityType Name="UserAuthentication">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="Projects" Relationship="GoAgileModel.FK_UserProfile_Project" FromRole="UserAuthentication" ToRole="Project" />
+        </EntityType>
+        <Association Name="FK_Project_PrkBackLog">
+          <End Role="Project" Type="GoAgileModel.Project" Multiplicity="0..1" />
+          <End Role="ProductBackLog" Type="GoAgileModel.ProductBackLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="ProjectID" />
+            </Principal>
+            <Dependent Role="ProductBackLog">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Project_PrjRelease">
+          <End Role="Project" Type="GoAgileModel.Project" Multiplicity="1" />
+          <End Role="ProjectRelease" Type="GoAgileModel.ProjectRelease" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="ProjectID" />
+            </Principal>
+            <Dependent Role="ProjectRelease">
+              <PropertyRef Name="ProjectID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SprintBackLog_Project">
+          <End Role="Project" Type="GoAgileModel.Project" Multiplicity="0..1" />
+          <End Role="SprintBackLog" Type="GoAgileModel.SprintBackLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="ProjectID" />
+            </Principal>
+            <Dependent Role="SprintBackLog">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserProfile_Project">
+          <End Role="UserAuthentication" Type="GoAgileModel.UserAuthentication" Multiplicity="0..1" />
+          <End Role="Project" Type="GoAgileModel.Project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserAuthentication">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Project">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Release_Sprint">
+          <End Role="ProjectRelease" Type="GoAgileModel.ProjectRelease" Multiplicity="0..1" />
+          <End Role="Sprint" Type="GoAgileModel.Sprint" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectRelease">
+              <PropertyRef Name="ProjectReleaseID" />
+            </Principal>
+            <Dependent Role="Sprint">
+              <PropertyRef Name="ReleaseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GoAgileModelStoreContainer" CdmEntityContainer="GoAgileContext">
+          <EntitySetMapping Name="ProductBackLogs">
+            <EntityTypeMapping TypeName="GoAgileModel.ProductBackLog">
+              <MappingFragment StoreEntitySet="ProductBackLog">
+                <ScalarProperty Name="ProductBackLogId" ColumnName="ProductBackLogId" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Projects">
+            <EntityTypeMapping TypeName="GoAgileModel.Project">
+              <MappingFragment StoreEntitySet="Project">
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProjectReleases">
+            <EntityTypeMapping TypeName="GoAgileModel.ProjectRelease">
+              <MappingFragment StoreEntitySet="ProjectRelease">
+                <ScalarProperty Name="ProjectReleaseID" ColumnName="ProjectReleaseID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sprints">
+            <EntityTypeMapping TypeName="GoAgileModel.Sprint">
+              <MappingFragment StoreEntitySet="Sprint">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="ReleaseId" ColumnName="ReleaseId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SprintBackLogs">
+            <EntityTypeMapping TypeName="GoAgileModel.SprintBackLog">
+              <MappingFragment StoreEntitySet="SprintBackLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserAuthentications">
+            <EntityTypeMapping TypeName="GoAgileModel.UserAuthentication">
+              <MappingFragment StoreEntitySet="UserAuthentication">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="GoAgileModel">
+        <EntityTypeShape EntityType="GoAgileModel.ProductBackLog" Width="1.5" PointX="5.25" PointY="1.25" Height="1.9802864583333335" IsExpanded="true" />
+        <EntityTypeShape EntityType="GoAgileModel.Project" Width="1.5" PointX="3" PointY="3.625" Height="3.1340950520833322" IsExpanded="true" />
+        <EntityTypeShape EntityType="GoAgileModel.ProjectRelease" Width="1.5" PointX="5.25" PointY="4" Height="2.5571907552083335" IsExpanded="true" />
+        <EntityTypeShape EntityType="GoAgileModel.Sprint" Width="1.5" PointX="7.5" PointY="4.125" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="GoAgileModel.SprintBackLog" Width="1.5" PointX="5.25" PointY="7.25" Height="1.9802864583333344" IsExpanded="true" />
+        <EntityTypeShape EntityType="GoAgileModel.UserAuthentication" Width="1.5" PointX="0.75" PointY="4.375" Height="1.7879850260416674" IsExpanded="true" />
+        <AssociationConnector Association="GoAgileModel.FK_Project_PrkBackLog" ManuallyRouted="false">
+          <ConnectorPoint PointX="3.75" PointY="3.625" />
+          <ConnectorPoint PointX="3.75" PointY="2.2401432291666667" />
+          <ConnectorPoint PointX="5.25" PointY="2.2401432291666667" />
+        </AssociationConnector>
+        <AssociationConnector Association="GoAgileModel.FK_Project_PrjRelease" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="5.2785953776041667" />
+          <ConnectorPoint PointX="5.25" PointY="5.2785953776041667" />
+        </AssociationConnector>
+        <AssociationConnector Association="GoAgileModel.FK_SprintBackLog_Project" ManuallyRouted="false">
+          <ConnectorPoint PointX="3.75" PointY="6.7590950520833317" />
+          <ConnectorPoint PointX="3.75" PointY="8.2401432291666676" />
+          <ConnectorPoint PointX="5.25" PointY="8.2401432291666676" />
+        </AssociationConnector>
+        <AssociationConnector Association="GoAgileModel.FK_UserProfile_Project" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.25" PointY="5.2689925130208337" />
+          <ConnectorPoint PointX="3" PointY="5.2689925130208337" />
+        </AssociationConnector>
+        <AssociationConnector Association="GoAgileModel.FK_Release_Sprint" ManuallyRouted="false">
+          <ConnectorPoint PointX="6.75" PointY="5.2112939453125" />
+          <ConnectorPoint PointX="7.5" PointY="5.2112939453125" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
